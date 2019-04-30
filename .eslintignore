@@ -1,0 +1,7 @@
+/build/
+/config/
+/dist/
+/*.js
+/test/unit/coverage/
+./src/assets/style/mui.min.js
+./src/assets/style/mui.min.css

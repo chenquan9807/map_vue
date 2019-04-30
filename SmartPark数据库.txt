@@ -1,0 +1,52 @@
+CREATE TABLE `userInfo` (
+  `info` int(11) NOT NULL AUTO_INCREMENT,
+  `userName` varchar(40) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `phoneNum` char(11) NOT NULL,
+  `license` varchar(10) DEFAULT NULL COMMENT '驾驶证',
+  `driveLicenseImg` varchar(255) DEFAULT NULL COMMENT '驾驶证照片',
+  `engineID` char(6) DEFAULT NULL COMMENT '行驶证',
+  `money` float(4,2) DEFAULT '0.00' COMMENT '用户余额',
+  PRIMARY KEY (`info`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `tempParkData` (
+  `info` int(11) NOT NULL AUTO_INCREMENT,
+  `parkID` varchar(15) NOT NULL COMMENT '停车场ID',
+  `license` varchar(10) NOT NULL COMMENT '驾驶证',
+  `inTime` datetime(6) NOT NULL COMMENT '车辆进入停车场时间',
+  PRIMARY KEY (`info`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `parkHistoryInfo` (
+  `info` int(11) NOT NULL AUTO_INCREMENT,
+  `parkID` varchar(15) NOT NULL COMMENT '停车场ID',
+  `inTime` datetime NOT NULL COMMENT '车辆进入停车场时间',
+  `outTime` datetime NOT NULL COMMENT '车辆出出停车场时间',
+  `license` varchar(10) NOT NULL COMMENT '驾驶证',
+  `needPay` float NOT NULL COMMENT '该车辆需支付停车费',
+  `ispayed` bit(1) NOT NULL DEFAULT b'0' COMMENT '未付款为0 ，已付款为1',
+  PRIMARY KEY (`info`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `allParks` (
+  `info` int(11) NOT NULL AUTO_INCREMENT,
+  `parkID` varchar(15) NOT NULL COMMENT '停车场ID',
+  `longitude` varchar(100) NOT NULL COMMENT '停车场经度',
+  `latitude` varchar(100) NOT NULL COMMENT '停车场维度',
+  `totalParkingSpace` int(11) DEFAULT NULL COMMENT '总停车位数量',
+  `parkingSpace` int(11) NOT NULL COMMENT '剩余车位数量',
+  `parkName` varchar(100) NOT NULL COMMENT '停车场名',
+  `address` varchar(140) NOT NULL COMMENT '停车场位置',
+  `parkImg` varchar(140) DEFAULT NULL COMMENT '停车场照片',
+  `cost` float(10,2) unsigned DEFAULT NULL COMMENT '停车场每小时收费',
+  PRIMARY KEY (`info`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+
+
+

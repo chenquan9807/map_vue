@@ -1,0 +1,32 @@
+var opts = {
+        width: 0, // 信息窗口宽度
+        height: 0, // 信息窗口高度
+        title: point['name'] // 信息窗口标题
+      }
+      var infoWindow = new BMap.InfoWindow('剩余车位：' + point['status'], opts) // 创建信息窗口对象
+      var timeout = null
+      marker.addEventListener('dblclick', function () {
+        console.log('1')
+        clearTimeout(timeout)
+        point = new BMap.Point(point['lng'], point['lat'])
+        window.map.openInfoWindow(infoWindow, point) // 开启信息窗口
+      })
+      marker.addEventListener('click', getAttr)
+      var vm = this
+      function getAttr () {
+        clearTimeout(timeout)
+        console.log('2')
+        timeout = window.setTimeout(function () { // 延迟单击事件触发内容
+          var re = confirm('确认要去这里吗？')
+          if (re === true) {
+            var p = marker.getPosition() // 获取marker的位置
+            var point = {}
+            for (let key in vm.point) {
+              point[key] = vm.point[key]
+              console.log(key + ':' + point[key])
+            }
+            vm.Destination = point['name']
+            vm.route(point, p)
+          }
+        }, 500)
+      }
