@@ -37,12 +37,12 @@
         </div>
         <div id="chargeIn">
           <span>收费时长：</span>
-          <span>{{hour  + minute / 60}}时 * 5元/时</span>
-          <span id="chargeM">{{(hour  + minute / 60) * 5}} 元</span>
+          <span>{{(hour  + minute / 60).toFixed(2)}}时 * 5元/时</span>
+          <span id="chargeM">{{((hour  + minute / 60) * 5).toFixed(2)}} 元</span>
         </div>
         <div id="inAll">
           <span>总计：</span>
-          <span id="allM">{{hour  + minute / 60}}元</span>
+          <span id="allM">{{(hour  + minute / 60).toFixed(2)}}元</span>
         </div>
         <div id="payments">
           <div id="weChat">微信</div>

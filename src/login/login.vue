@@ -77,7 +77,7 @@ export default {
       if (this.reUser && this.rePass) {
         var storage = window.localStorage
         $.ajax({
-          url: '/api/user/login',
+          url: 'http://39.108.79.28/SmartPark/user/login',
           type: 'post',
           // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
           data: {
@@ -112,8 +112,8 @@ export default {
     },
     Guest () {
       var storage = window.localStorage
-      storage['username'] = this.username
-      storage['password'] = this.password
+      storage['username'] = 'Guest'
+      storage['password'] = 'a123456'
       storage['license'] = '湘A123456'
       storage['n'] = 1
       $('form').fadeOut(500)

@@ -242,7 +242,7 @@ export default {
         $('#login-button').text('立即注册')
         // vm.showText = '立即注册'
         $.ajax({
-          url: '/api/use/sendCode',
+          url: 'http://39.108.79.28/SmartPark/use/sendCode',
           type: 'post',
           // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
           data: {
@@ -268,7 +268,7 @@ export default {
         //   return false
         // }
         $.ajax({
-          url: '/api/user/register',
+          url: 'http://39.108.79.28/SmartPark/user/register',
           type: 'post',
           // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
           data: {

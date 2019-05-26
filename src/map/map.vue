@@ -7,6 +7,9 @@
     </map-header>
     <div id="allmap" :style = "'height:' + MapHeight + 'px'"></div>
     <div id="route"></div>
+    <div id="location" v-on:click="refresh">
+      <i class="iconfont refresh">&#xe622;</i>
+    </div>
     <info
       :Destination="Destination" :Distance="Distance"
       :MapHeight="MapHeight" :pointA="pointA" :pointB="pointB" :status="status"
@@ -53,12 +56,8 @@ export default {
     if (!window.localStorage.username || !window.localStorage.password) {
       this.$router.push({path: '/login'})
     }
-    if (window.localStorage.n === 1) {
-      window.localStorage.n = window.localStorage.n +
-        window.location.reload()
-    }
     // websocket连接-----10.151.91.33----39.108.79.28:80
-    var websocket = new WebSocket('ws://120.79.212.22:80/SmartPark/websocket/' + window.localStorage.username)
+    var websocket = new WebSocket('ws://39.108.79.28/SmartPark/websocket/' + window.localStorage.username)
     window.websocket = websocket
     // websocket连接成功
     window.websocket.onopen = function () {
@@ -83,7 +82,6 @@ export default {
     store.commit('username', window.localStorage.username)
     store.commit('password', window.localStorage.password)
     store.commit('license', window.localStorage.license)
-    // console.log(store.state.userName, store.state.passWord, store.state.licenseNumber)
     let vm = this
     vm.GetMapHeight()
     vm.CteateMap()
@@ -93,7 +91,12 @@ export default {
     geolocation.getCurrentPosition(function (r) {
       vm.point = r.point
       // eslint-disable-next-line
-        if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+      if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+        if (parseInt(window.localStorage.n) === 1) {
+          window.localStorage.n = window.localStorage.n + 1
+          window.location.reload()
+          this.$router.go(0)
+        }
         vm.Mark(vm.point, mypoint)
         vm.PointGet()
       } else {
@@ -131,7 +134,9 @@ export default {
     PointGet () {
       let vm = this
       $.ajax({
-        url: '/api/Park/searchNearbyParks',
+        url: 'https://bird.ioliu.cn/v1?url=http://39.108.79.28/SmartPark/Park/searchNearbyParks',
+        // https://bird.ioliu.cn/v1?url=
+        // url: '/api/Park/searchNearbyParks',
         type: 'post',
         // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
         data: {
@@ -166,7 +171,8 @@ export default {
     },
     route (pointA, pointB, m) {
       var vm = this
-      $('#Info').hide()
+      $('#Info').hide(500)
+      $('#location').hide(500)
       if (m === 1) {
         $('#allmap').css('height', vm.MapHeight - 300)
       }
@@ -204,6 +210,7 @@ export default {
       marker.addEventListener('click', function () {
         var info = $('#Info')
         if (info.is(':hidden')) {
+          $('#location').hide(500)
           vm.MapHeight = vm.MapHeight - 100
         }
         info.fadeIn()
@@ -263,7 +270,8 @@ export default {
       }
     },
     infoDown () {
-      $('#Info').fadeOut()
+      $('#Info').hide(500)
+      $('#location').show(500)
       this.MapHeight = this.MapHeight + 100
       this.MapView(window.pointspark)
     },
@@ -272,10 +280,39 @@ export default {
       user.show()
       user.removeClass('fadeOutLeft')
       user.addClass('animated fadeInUpBig')
+    },
+    refresh () {
+      var vm = this
+      window.map.clearOverlays() // 清除地图上所有覆盖物
+      var geolocation = new BMap.Geolocation()
+      window.map.enableScrollWheelZoom(true)
+      geolocation.enableSDKLocation()
+      geolocation.getCurrentPosition(function (r) {
+        vm.point = r.point
+        // eslint-disable-next-line
+        if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+          vm.Mark(vm.point, mypoint)
+          vm.PointGet()
+        } else {
+          alert('failed' + this.getStatus())
+        }
+      })
+    },
+    changecity () {
+      let vm = this
+      // console.log(r.point)
+      // lat: 28.077113685045
+      // lng: 113.01701576319
+      alert('该地区暂未提供服务\n即将为您切换到体验区')
+      vm.point['lng'] = 113.01701576319
+      vm.point['lat'] = 28.077113685045
+      vm.Mark(vm.point, mypoint)
+      vm.PointGet()
     }
   },
   watch: {
     points () {
+      window.testnum = 0
       var pointspark = []
       var point = {}
       for (let key in this.point) {
@@ -283,6 +320,7 @@ export default {
       }
       pointspark.push(point)
       for (let item in this.points) {
+        window.testnum = 1
         var dic = {}
         for (let key in this.points[item]) {
           if (key === 'parkID') {
@@ -305,6 +343,9 @@ export default {
         pointspark.push(dic)
       }
       window.pointspark = pointspark
+      if (window.testnum === 0) {
+        this.changecity()
+      }
       this.MapView(pointspark)
     }
   }
@@ -316,5 +357,20 @@ export default {
   }
   #route {
     overflow: auto;
+  }
+  #location {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 80px;
+    left: 30px;
+    cursor: pointer;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+  }
+  .refresh {
+    font-size: 30px;
+    color: #ff6354;
+    margin: 0;
+    padding: 0;
   }
 </style>
